@@ -1,0 +1,198 @@
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| Library083         |
+| Sample             |
+| demo               |
+| information_schema |
+| library            |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+8 rows in set (0.00 sec)
+
+mysql> use Library083;
+Database changed
+mysql> show tables;
+\+----------------------+
+| Tables_in_Library083 |
++----------------------+
+| Book                 |
+| Book_Authors         |
+| Book_Copies          |
+| Book_Lending         |
+| Library_Programme    |
+| Publisher            |
++----------------------+
+6 rows in set (0.01 sec)
+
+mysql> select * from Book;
++---------+--------------------+----------------+----------+
+| Book_id | Title              | Publisher_Name | Pub_Year |
++---------+--------------------+----------------+----------+
+|    1001 | Fantastic beasts   | Muskan         |     2018 |
+|    1002 | Christmas Joy      | Hermione       |     1996 |
+|    1003 | Spells for fun     | Harry          |     1895 |
+|    1004 | Guide to buy a car | Kunal          |     2006 |
+|    1005 | Origami Guide      | kritika        |     2012 |
++---------+--------------------+----------------+----------+
+5 rows in set (0.00 sec)
+
+mysql> select * from Book_Authors;
++---------+---------------+
+| Book_id | Author_name   |
++---------+---------------+
+|    1001 | J.K. Rolling  |
+|    1002 | Jane Royal    |
+|    1003 | Tim Hardy     |
+|    1004 | Charli Charli |
+|    1005 | Jim Colin     |
++---------+---------------+
+5 rows in set (0.00 sec)
+
+mysql> select * from Book_Copies;
++--------------+---------+--------------+
+| No_of_copies | Book_id | Programme_ID |
++--------------+---------+--------------+
+|           12 |    1001 |          201 |
+|            9 |    1003 |          203 |
+|            4 |    1005 |          202 |
+|            6 |    1002 |          201 |
+|           17 |    1004 |          203 |
++--------------+---------+--------------+
+5 rows in set (0.00 sec)
+
+mysql> select * from Book_Lending;
++---------+--------------+---------+------------+------------+
+| Book_id | Programme_ID | Card_no | Date_Out   | Due_Date   |
++---------+--------------+---------+------------+------------+
+|    1001 |          201 |     111 | 2017-01-02 | 2017-01-30 |
+|    1002 |          201 |     222 | 2017-04-23 | 2017-05-05 |
+|    1003 |          203 |     333 | 2017-02-28 | 2017-03-26 |
+|    1004 |          203 |     444 | 2017-05-16 | 2017-06-01 |
+|    1005 |          202 |     555 | 2017-03-08 | 2017-04-02 |
+|    1003 |          202 |     333 | 2017-02-28 | 2017-03-26 |
+|    1004 |          201 |     111 | 2017-01-02 | 2017-01-30 |
+|    1003 |          201 |     111 | 2017-02-15 | 2017-03-24 |
+|    1001 |          203 |     333 | 2017-04-28 | 2017-05-27 |
+|    1005 |          203 |     333 | 2017-03-28 | 2017-04-27 |
+|    1002 |          201 |     111 | 2017-01-15 | 2017-02-24 |
++---------+--------------+---------+------------+------------+
+11 rows in set (0.00 sec)
+
+mysql> select * from Library_Programme;
++--------------+------------------+-----------+
+| Programme_ID | Programme_Name   | Address   |
++--------------+------------------+-----------+
+|          201 | Fiction          | USA       |
+|          202 | Computer Science | Bengaluru |
+|          203 | Activity         | Delhi     |
++--------------+------------------+-----------+
+3 rows in set (0.00 sec)
+
+mysql> select * from Publisher;
++----------+---------------+------------+
+| Name     | Address       | Phone      |
++----------+---------------+------------+
+| Kritika  | Ghaziabad     | 8975674535 |
+| Muskan   | chhattisghar  | 7856798745 |
+| Kunal    | Bengaluru     | 7894563452 |
+| Harry    | Godric Hollow | 6789877654 |
+| Hermione | Muggle World  | 8769879876 |
++----------+---------------+------------+
+5 rows in set (0.00 sec)
+
+mysql> desc Book;
++----------------+-------------+------+-----+---------+-------+
+| Field          | Type        | Null | Key | Default | Extra |
++----------------+-------------+------+-----+---------+-------+
+| Book_id        | int         | NO   | PRI | NULL    |       |
+| Title          | varchar(20) | YES  |     | NULL    |       |
+| Publisher_Name | varchar(20) | YES  |     | NULL    |       |
+| Pub_Year       | int         | YES  |     | NULL    |       |
++----------------+-------------+------+-----+---------+-------+
+4 rows in set (0.01 sec)
+
+mysql> desc Book_Authors;
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| Book_id     | int         | YES  |     | NULL    |       |
+| Author_name | varchar(20) | YES  |     | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+mysql> desc Book_Copies;
++--------------+------+------+-----+---------+-------+
+| Field        | Type | Null | Key | Default | Extra |
++--------------+------+------+-----+---------+-------+
+| No_of_copies | int  | YES  |     | NULL    |       |
+| Book_id      | int  | YES  |     | NULL    |       |
+| Programme_ID | int  | YES  |     | NULL    |       |
++--------------+------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql> desc Book_Lending;
++--------------+------+------+-----+---------+-------+
+| Field        | Type | Null | Key | Default | Extra |
++--------------+------+------+-----+---------+-------+
+| Book_id      | int  | YES  |     | NULL    |       |
+| Programme_ID | int  | YES  |     | NULL    |       |
+| Card_no      | int  | YES  |     | NULL    |       |
+| Date_Out     | date | YES  |     | NULL    |       |
+| Due_Date     | date | YES  |     | NULL    |       |
++--------------+------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> desc Library_Programme;
++----------------+-------------+------+-----+---------+-------+
+| Field          | Type        | Null | Key | Default | Extra |
++----------------+-------------+------+-----+---------+-------+
+| Programme_ID   | int         | NO   | PRI | NULL    |       |
+| Programme_Name | varchar(50) | YES  |     | NULL    |       |
+| Address        | varchar(25) | YES  |     | NULL    |       |
++----------------+-------------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql> desc Publisher;
++---------+---------------+------+-----+---------+-------+
+| Field   | Type          | Null | Key | Default | Extra |
++---------+---------------+------+-----+---------+-------+
+| Name    | varchar(20)   | YES  |     | NULL    |       |
+| Address | varchar(20)   | YES  |     | NULL    |       |
+| Phone   | decimal(10,0) | YES  |     | NULL    |       |
++---------+---------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT lp.Programme_Name, b.Book_id, b.Title, b.Publisher_Name,ba.Author_name, bc.No_of_copies  FROM Book b, Book_Authors ba, Book_Copies bc, Library_Programme lp  WHERE b.Book_id = ba.Book_id  AND ba.Book_id = bc.Book_id  GROUP BY lp.Programme_Name, b.Book_id, b.Title, b.Publisher_Name, ba.Author_name, bc.No_of_copies;
++------------------+---------+--------------------+----------------+---------------+--------------+
+| Programme_Name   | Book_id | Title              | Publisher_Name | Author_name   | No_of_copies |
++------------------+---------+--------------------+----------------+---------------+--------------+
+| Fiction          |    1001 | Fantastic beasts   | Muskan         | J.K. Rolling  |           12 |
+| Computer Science |    1001 | Fantastic beasts   | Muskan         | J.K. Rolling  |           12 |
+| Activity         |    1001 | Fantastic beasts   | Muskan         | J.K. Rolling  |           12 |
+| Fiction          |    1003 | Spells for fun     | Harry          | Tim Hardy     |            9 |
+| Computer Science |    1003 | Spells for fun     | Harry          | Tim Hardy     |            9 |
+| Activity         |    1003 | Spells for fun     | Harry          | Tim Hardy     |            9 |
+| Fiction          |    1005 | Origami Guide      | kritika        | Jim Colin     |            4 |
+| Computer Science |    1005 | Origami Guide      | kritika        | Jim Colin     |            4 |
+| Activity         |    1005 | Origami Guide      | kritika        | Jim Colin     |            4 |
+| Fiction          |    1002 | Christmas Joy      | Hermione       | Jane Royal    |            6 |
+| Computer Science |    1002 | Christmas Joy      | Hermione       | Jane Royal    |            6 |
+| Activity         |    1002 | Christmas Joy      | Hermione       | Jane Royal    |            6 |
+| Fiction          |    1004 | Guide to buy a car | Kunal          | Charli Charli |           17 |
+| Computer Science |    1004 | Guide to buy a car | Kunal          | Charli Charli |           17 |
+| Activity         |    1004 | Guide to buy a car | Kunal          | Charli Charli |           17 |
++------------------+---------+--------------------+----------------+---------------+--------------+
+15 rows in set (0.01 sec)
+
+mysql> Select Card_no from Book_Lending Where Date_Out Between "2017-01-01" and "2017-06-30" GROUP BY Card_no HAVING count(*)>3;
++---------+
+| Card_no |
++---------+
+|     111 |
+|     333 |
++---------+
+2 rows in set (0.00 sec)
