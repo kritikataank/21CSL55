@@ -1,0 +1,184 @@
+mysql> CREATE DATABASE LibraryDatabase;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> USE LibraryDatabase;
+Database changed
+mysql> CREATE TABLE Publisher (Name varchar(255) PRIMARY KEY, Address varchar(255), Phone integer(10));
+Query OK, 0 rows affected, 1 warning (0.03 sec)
+
+mysql> DESC Publisher;
++---------+--------------+------+-----+---------+-------+
+| Field   | Type         | Null | Key | Default | Extra |
++---------+--------------+------+-----+---------+-------+
+| Name    | varchar(255) | NO   | PRI | NULL    |       |
+| Address | varchar(255) | YES  |     | NULL    |       |
+| Phone   | int          | YES  |     | NULL    |       |
++---------+--------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> CREATE TABLE Book (Book_id integer(5) PRIMARY KEY, Title varchar(255), Publisher_Name varchar(255), Pub_Year integer(4), FOREIGN KEY (Publisher_Name) REFERENCES Publisher(Name) ON DELETE CASCADE);
+Query OK, 0 rows affected, 2 warnings (0.04 sec)
+
+mysql> DESC Book;
++----------------+--------------+------+-----+---------+-------+
+| Field          | Type         | Null | Key | Default | Extra |
++----------------+--------------+------+-----+---------+-------+
+| Book_id        | int          | NO   | PRI | NULL    |       |
+| Title          | varchar(255) | YES  |     | NULL    |       |
+| Publisher_Name | varchar(255) | YES  | MUL | NULL    |       |
+| Pub_Year       | int          | YES  |     | NULL    |       |
++----------------+--------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> CREATE TABLE Book_Authors (Book_id integer(5) PRIMARY KEY, Author_Name varchar(255), FOREIGN KEY (Book_id) REFERE
+NCES Book(Book_id) ON DELETE CASCADE);
+Query OK, 0 rows affected, 1 warning (0.04 sec)
+
+mysql> DESC Book_Authors;
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| Book_id     | int          | NO   | PRI | NULL    |       |
+| Author_Name | varchar(255) | YES  |     | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+mysql> CREATE TABLE Library_Programme (Programme_id integer(5) PRIMARY KEY, Programme_Name varchar(255), Address varchar
+(255));
+Query OK, 0 rows affected, 1 warning (0.03 sec)
+
+mysql> DESC Library_Programme;
++----------------+--------------+------+-----+---------+-------+
+| Field          | Type         | Null | Key | Default | Extra |
++----------------+--------------+------+-----+---------+-------+
+| Programme_id   | int          | NO   | PRI | NULL    |       |
+| Programme_Name | varchar(255) | YES  |     | NULL    |       |
+| Address        | varchar(255) | YES  |     | NULL    |       |
++----------------+--------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> CREATE TABLE Book_Copies (Book_id integer(5), Programme_id integer(5), No_of_copies integer(2), PRIMARY KEY(Book_id, Programme_id), FOREIGN KEY (Book_id) REFERENCES Book(Book_id) ON DELETE CASCADE, FOREIGN KEY (Programme_id) REFERENCES Library_Programme(Programme_id) ON DELETE CASCADE);
+Query OK, 0 rows affected, 3 warnings (0.03 sec)
+
+mysql> DESC Book_Copies;
++--------------+------+------+-----+---------+-------+
+| Field        | Type | Null | Key | Default | Extra |
++--------------+------+------+-----+---------+-------+
+| Book_id      | int  | NO   | PRI | NULL    |       |
+| Programme_id | int  | NO   | PRI | NULL    |       |
+| No_of_copies | int  | YES  |     | NULL    |       |
++--------------+------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql> CREATE TABLE Book_Lending (Book_id integer(5), Programme_id integer(5), Card_no integer(5), Date_Out date, Due_Date date, PRIMARY KEY (Book_id, Programme_id, Card_no), FOREIGN KEY (Book_id, Programme_id) REFERENCES Book_Copies(Book_i
+d, Programme_id));
+Query OK, 0 rows affected, 3 warnings (0.03 sec)
+
+mysql> DESC Book_Lending;
++--------------+------+------+-----+---------+-------+
+| Field        | Type | Null | Key | Default | Extra |
++--------------+------+------+-----+---------+-------+
+| Book_id      | int  | NO   | PRI | NULL    |       |
+| Programme_id | int  | NO   | PRI | NULL    |       |
+| Card_no      | int  | NO   | PRI | NULL    |       |
+| Date_Out     | date | YES  |     | NULL    |       |
+| Due_Date     | date | YES  |     | NULL    |       |
++--------------+------+------+-----+---------+-------+
+5 rows in set (0.01 sec)
+
+mysql> Show Tables;
++---------------------------+
+| Tables_in_LibraryDatabase |
++---------------------------+
+| Book                      |
+| Book_Authors              |
+| Book_Copies               |
+| Book_Lending              |
+| Library_Programme         |
+| Publisher                 |
++---------------------------+
+6 rows in set (0.00 sec)
+
+mysql> INSERT INTO Publisher (Name, Address, Phone) VALUES ('ABC Publications', '123 Main St, Cityville', 78923),('XYZ Books', '4
+56 Oak St, Townsville', 67845);
+Query OK, 2 rows affected (0.01 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM Publisher;
++------------------+------------------------+-------+
+| Name             | Address                | Phone |
++------------------+------------------------+-------+
+| ABC Publications | 123 Main St, Cityville | 78923 |
+| XYZ Books        | 456 Oak St, Townsville | 67845 |
++------------------+------------------------+-------+
+2 rows in set (0.00 sec)
+
+mysql> INSERT INTO Book (Book_id, Title, Publisher_Name, Pub_Year) VALUES (1, 'Introduction to SQL', 'ABC Publications', 2020), (2, 'Database Design Fundamentals', 'XYZ Books', 2018), (3, 'Advanced SQL Queries', 'ABC Publications', 2022);
+Query OK, 3 rows affected (0.01 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM Book;
++---------+------------------------------+------------------+----------+
+| Book_id | Title                        | Publisher_Name   | Pub_Year |
++---------+------------------------------+------------------+----------+
+|       1 | Introduction to SQL          | ABC Publications |     2020 |
+|       2 | Database Design Fundamentals | XYZ Books        |     2018 |
+|       3 | Advanced SQL Queries         | ABC Publications |     2022 |
++---------+------------------------------+------------------+----------+
+3 rows in set (0.00 sec)
+
+mysql> INSERT INTO Book_Authors (Book_id, Author_Name) VALUES (1, 'Jane Smith'), (2, 'Alice Johnson'), (3, 'Bob Williams');
+Query OK, 3 rows affected (0.01 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM Book_Authors;
++---------+---------------+
+| Book_id | Author_Name   |
++---------+---------------+
+|       1 | Jane Smith    |
+|       2 | Alice Johnson |
+|       3 | Bob Williams  |
++---------+---------------+
+3 rows in set (0.00 sec)
+
+mysql> INSERT INTO Library_Programme (Programme_id, Programme_Name, Address) VALUES (1, 'Program A', '789 Maple St, Villagetown'), (2, 'Program B', '101 Pine St, Hillsville');
+Query OK, 2 rows affected (0.01 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM Library_Programme;
++--------------+----------------+---------------------------+
+| Programme_id | Programme_Name | Address                   |
++--------------+----------------+---------------------------+
+|            1 | Program A      | 789 Maple St, Villagetown |
+|            2 | Program B      | 101 Pine St, Hillsville   |
++--------------+----------------+---------------------------+
+2 rows in set (0.00 sec)
+
+mysql> INSERT INTO Book_Copies (Book_id, Programme_id, No_of_Copies) VALUES (1, 2, 5), (2, 1, 8), (3, 2, 15);
+Query OK, 3 rows affected (0.01 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM Book_Copies;
++---------+--------------+--------------+
+| Book_id | Programme_id | No_of_copies |
++---------+--------------+--------------+
+|       1 |            2 |            5 |
+|       2 |            1 |            8 |
+|       3 |            2 |           15 |
++---------+--------------+--------------+
+3 rows in set (0.00 sec)
+
+mysql> INSERT INTO Book_Lending (Book_id, Programme_id, Card_No, Date_Out, Due_Date) VALUES (1, 2, 101, '2023-01-01', '2023-01-15
+'),(2, 1, 102, '2023-02-01', '2023-02-15'), (3, 2, 103, '2023-03-01', '2023-03-15');
+Query OK, 3 rows affected (0.01 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM Book_Lending;
++---------+--------------+---------+------------+------------+
+| Book_id | Programme_id | Card_no | Date_Out   | Due_Date   |
++---------+--------------+---------+------------+------------+
+|       1 |            2 |     101 | 2023-01-01 | 2023-01-15 |
+|       2 |            1 |     102 | 2023-02-01 | 2023-02-15 |
+|       3 |            2 |     103 | 2023-03-01 | 2023-03-15 |
++---------+--------------+---------+------------+------------+
+3 rows in set (0.00 sec)
