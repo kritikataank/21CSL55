@@ -58,7 +58,7 @@ mysql> DESC Library_Programme;
 3 rows in set (0.00 sec)
 
 mysql> CREATE TABLE Book_Copies (Book_id integer(5), Programme_id integer(5), No_of_copies integer(2), PRIMARY KEY(Book_id, Programme_id), FOREIGN KEY (Book_id) REFERENCES Book(Book_id) ON DELETE CASCADE, FOREIGN KEY (Programme_id) REFERENCES Library_Programme(Programme_id) ON DELETE CASCADE);
-Query OK, 0 rows affected, 3 warnings (0.03 sec)
+Query OK, 0 rows affected, 3 warnings (0.04 sec)
 
 mysql> DESC Book_Copies;
 +--------------+------+------+-----+---------+-------+
@@ -68,23 +68,22 @@ mysql> DESC Book_Copies;
 | Programme_id | int  | NO   | PRI | NULL    |       |
 | No_of_copies | int  | YES  |     | NULL    |       |
 +--------------+------+------+-----+---------+-------+
-3 rows in set (0.01 sec)
+3 rows in set (0.00 sec)
 
-mysql> CREATE TABLE Book_Lending (Book_id integer(5), Programme_id integer(5), Card_no integer(5), Date_Out date, Due_Date date, PRIMARY KEY (Book_id, Programme_id, Card_no), FOREIGN KEY (Book_id, Programme_id) REFERENCES Book_Copies(Book_i
-d, Programme_id));
-Query OK, 0 rows affected, 3 warnings (0.03 sec)
+mysql> CREATE TABLE Book_Lending (Book_id integer(5), Programme_id integer(5), Card_no integer(5), Date_Out date, Due_Date date, FOREIGN KEY (Book_id, Programme_id) REFERENCES Book_Copies(Book_id, Programme_id));
+Query OK, 0 rows affected, 3 warnings (0.04 sec)
 
 mysql> DESC Book_Lending;
 +--------------+------+------+-----+---------+-------+
 | Field        | Type | Null | Key | Default | Extra |
 +--------------+------+------+-----+---------+-------+
-| Book_id      | int  | NO   | PRI | NULL    |       |
-| Programme_id | int  | NO   | PRI | NULL    |       |
-| Card_no      | int  | NO   | PRI | NULL    |       |
+| Book_id      | int  | YES  | MUL | NULL    |       |
+| Programme_id | int  | YES  |     | NULL    |       |
+| Card_no      | int  | YES  |     | NULL    |       |
 | Date_Out     | date | YES  |     | NULL    |       |
 | Due_Date     | date | YES  |     | NULL    |       |
 +--------------+------+------+-----+---------+-------+
-5 rows in set (0.01 sec)
+5 rows in set (0.00 sec)
 
 mysql> Show Tables;
 +---------------------------+
@@ -168,17 +167,34 @@ mysql> SELECT * FROM Book_Copies;
 +---------+--------------+--------------+
 3 rows in set (0.00 sec)
 
-mysql> INSERT INTO Book_Lending (Book_id, Programme_id, Card_No, Date_Out, Due_Date) VALUES (1, 2, 101, '2023-01-01', '2023-01-15
-'),(2, 1, 102, '2023-02-01', '2023-02-15'), (3, 2, 103, '2023-03-01', '2023-03-15');
-Query OK, 3 rows affected (0.01 sec)
-Records: 3  Duplicates: 0  Warnings: 0
+mysql> INSERT INTO Book_Lending (Book_id, Programme_id, Card_No, Date_Out, Due_Date) VALUES (1, 2, 101, '2017-01-01', '2017-01-15'), (2, 1, 101, '2017-02-01', '2017-02-15'), (3, 2, 101, '2017-03-01', '2017-03-15'), (1, 2, 102, '2017-04-01', '2017-04-15'), (2, 1, 102, '2017-05-01', '2017-05-15'), (3, 2, 102, '2017-06-01', '2017-06-15'), (1, 2, 103, '2017-01-01', '2017-01-15'), (2, 1, 103, '2017-02-01', '2017-02-15'), (3, 2, 103, '2017-03-01', '2017-03-15'), (1, 2, 104, '2017-04-01', '2017-04-15');
+Query OK, 10 rows affected (0.01 sec)
+Records: 10  Duplicates: 0  Warnings: 0
 
 mysql> SELECT * FROM Book_Lending;
 +---------+--------------+---------+------------+------------+
 | Book_id | Programme_id | Card_no | Date_Out   | Due_Date   |
 +---------+--------------+---------+------------+------------+
-|       1 |            2 |     101 | 2023-01-01 | 2023-01-15 |
-|       2 |            1 |     102 | 2023-02-01 | 2023-02-15 |
-|       3 |            2 |     103 | 2023-03-01 | 2023-03-15 |
+|       1 |            2 |     101 | 2017-01-01 | 2017-01-15 |
+|       2 |            1 |     101 | 2017-02-01 | 2017-02-15 |
+|       3 |            2 |     101 | 2017-03-01 | 2017-03-15 |
+|       1 |            2 |     102 | 2017-04-01 | 2017-04-15 |
+|       2 |            1 |     102 | 2017-05-01 | 2017-05-15 |
+|       3 |            2 |     102 | 2017-06-01 | 2017-06-15 |
+|       1 |            2 |     103 | 2017-01-01 | 2017-01-15 |
+|       2 |            1 |     103 | 2017-02-01 | 2017-02-15 |
+|       3 |            2 |     103 | 2017-03-01 | 2017-03-15 |
+|       1 |            2 |     104 | 2017-04-01 | 2017-04-15 |
 +---------+--------------+---------+------------+------------+
+10 rows in set (0.00 sec)
+
+#QUERY 01
+mysql> SELECT lp.Programme_Name, b.Book_id, b.Title, b.Publisher_Name, ba.Author_Name, bc.No_of_copies FROM Book b, Book_Authors ba, Book_Copies bc, Library_Programme lp WHERE b.Book_id = ba.Book_id AND ba.Book_id = bc.Book_id and bc.Programme_id = lp.Programme_id GROUP BY lp.Programme_Name, b.Book_id, b.Publisher_Name, ba.Author_Name, bc.No_of_copies;
++----------------+---------+------------------------------+------------------+---------------+--------------+
+| Programme_Name | Book_id | Title                        | Publisher_Name   | Author_Name   | No_of_copies |
++----------------+---------+------------------------------+------------------+---------------+--------------+
+| Program B      |       1 | Introduction to SQL          | ABC Publications | Jane Smith    |            5 |
+| Program A      |       2 | Database Design Fundamentals | XYZ Books        | Alice Johnson |            8 |
+| Program B      |       3 | Advanced SQL Queries         | ABC Publications | Bob Williams  |           15 |
++----------------+---------+------------------------------+------------------+---------------+--------------+
 3 rows in set (0.00 sec)
