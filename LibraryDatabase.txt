@@ -203,3 +203,40 @@ mysql> SELECT lp.Programme_Name, b.Book_id, b.Title, b.Publisher_Name, ba.Author
 | Program B      |       3 | Advanced SQL Queries         | ABC Publications | Bob Williams  |           15 |
 +----------------+---------+------------------------------+------------------+---------------+--------------+
 3 rows in set (0.00 sec)
+
+#QUERY 02
+mysql> SELECT Card_no FROM Book_Lending WHERE Date_Out BETWEEN '2017-01-01' AND '2017-06-30' GROUP BY Card_no HAVING Count(*) > 3;
++---------+
+| Card_no |
++---------+
+|     101 |
++---------+
+1 row in set (0.00 sec)
+
+#QUERY 03
+
+#QUERY 04
+mysql> SELECT Book_id, Title, Publisher_Name, Pub_Year FROM Book GROUP BY Pub_Year, Book_id, Title, Publisher_Name;
++---------+------------------------------+------------------+----------+
+| Book_id | Title                        | Publisher_Name   | Pub_Year |
++---------+------------------------------+------------------+----------+
+|       1 | Introduction to SQL          | ABC Publications |     2020 |
+|       2 | Database Design Fundamentals | XYZ Books        |     2018 |
+|       3 | Advanced SQL Queries         | ABC Publications |     2022 |
++---------+------------------------------+------------------+----------+
+3 rows in set (0.00 sec)
+
+#QUERY 05
+mysql> CREATE VIEW Books_Available AS SELECT b.Book_id, b.Title, bc.No_of_copies FROM Book b, Book_Copies bc, Library_Pr
+ogramme lp WHERE b.Book_id = bc.Book_id AND lp.Programme_id = bc.Programme_id;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> SELECT * FROM Books_Available;
++---------+------------------------------+--------------+
+| Book_id | Title                        | No_of_copies |
++---------+------------------------------+--------------+
+|       1 | Introduction to SQL          |            5 |
+|       2 | Database Design Fundamentals |            8 |
+|       3 | Advanced SQL Queries         |           15 |
++---------+------------------------------+--------------+
+3 rows in set (0.00 sec)
