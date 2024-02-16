@@ -70,7 +70,7 @@ mysql> DESC Book_Copies;
 +--------------+------+------+-----+---------+-------+
 3 rows in set (0.00 sec)
 
-mysql> CREATE TABLE Book_Lending (Book_id integer(5), Programme_id integer(5), Card_no integer(5), Date_Out date, Due_Date date, FOREIGN KEY (Book_id, Programme_id) REFERENCES Book_Copies(Book_id, Programme_id));
+mysql>  CREATE TABLE Book_Lending (Book_id integer(5), Programme_id integer(5), Card_no integer(5), Date_Out date, Due_Date date, FOREIGN KEY (Book_id) REFERENCES Book(Book_id) ON DELETE CASCADE, FOREIGN KEY (Programme_id) REFERENCES Library_Programme(Programme_id) ON DELETE CASCADE);
 Query OK, 0 rows affected, 3 warnings (0.04 sec)
 
 mysql> DESC Book_Lending;
@@ -78,7 +78,7 @@ mysql> DESC Book_Lending;
 | Field        | Type | Null | Key | Default | Extra |
 +--------------+------+------+-----+---------+-------+
 | Book_id      | int  | YES  | MUL | NULL    |       |
-| Programme_id | int  | YES  |     | NULL    |       |
+| Programme_id | int  | YES  | MUL | NULL    |       |
 | Card_no      | int  | YES  |     | NULL    |       |
 | Date_Out     | date | YES  |     | NULL    |       |
 | Due_Date     | date | YES  |     | NULL    |       |
@@ -214,6 +214,26 @@ mysql> SELECT Card_no FROM Book_Lending WHERE Date_Out BETWEEN '2017-01-01' AND 
 1 row in set (0.00 sec)
 
 #QUERY 03
+mysql> DELETE FROM Book WHERE Book_id = 2;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> SELECT * FROM Books_Available;
++---------+----------------------+--------------+
+| Book_id | Title                | No_of_copies |
++---------+----------------------+--------------+
+|       1 | Introduction to SQL  |            5 |
+|       3 | Advanced SQL Queries |           15 |
++---------+----------------------+--------------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT * FROM Book;
++---------+----------------------+------------------+----------+
+| Book_id | Title                | Publisher_Name   | Pub_Year |
++---------+----------------------+------------------+----------+
+|       1 | Introduction to SQL  | ABC Publications |     2020 |
+|       3 | Advanced SQL Queries | ABC Publications |     2022 |
++---------+----------------------+------------------+----------+
+2 rows in set (0.00 sec)
 
 #QUERY 04
 mysql> SELECT Book_id, Title, Publisher_Name, Pub_Year FROM Book GROUP BY Pub_Year, Book_id, Title, Publisher_Name;
