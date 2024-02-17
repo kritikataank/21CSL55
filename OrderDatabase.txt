@@ -1,0 +1,167 @@
+mysql> Create Database OrderDatabase;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> Use OrderDatabase;
+Database changed
+mysql> CREATE TABLE Salesman ( Salesman_id INT PRIMARY KEY, Name VARCHAR(255), City VARCHAR(255), Commission DECIMAL(10, 2));
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> DESC Salesman;
++-------------+---------------+------+-----+---------+-------+
+| Field       | Type          | Null | Key | Default | Extra |
++-------------+---------------+------+-----+---------+-------+
+| Salesman_id | int           | NO   | PRI | NULL    |       |
+| Name        | varchar(255)  | YES  |     | NULL    |       |
+| City        | varchar(255)  | YES  |     | NULL    |       |
+| Commission  | decimal(10,2) | YES  |     | NULL    |       |
++-------------+---------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> CREATE TABLE Customer ( Customer_id INT PRIMARY KEY, Cust_Name VARCHAR(255), City VARCHAR(255), Grade INT, Salesman_id INT, FOREIGN KEY (Salesman_id) REFERENCES Salesman(Salesman_id) ON DELETE CASCADE);
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> DESC Customer;
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| Customer_id | int          | NO   | PRI | NULL    |       |
+| Cust_Name   | varchar(255) | YES  |     | NULL    |       |
+| City        | varchar(255) | YES  |     | NULL    |       |
+| Grade       | int          | YES  |     | NULL    |       |
+| Salesman_id | int          | YES  | MUL | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> CREATE TABLE Orders ( Ord_No INT PRIMARY KEY, Purchase_Amt DECIMAL(10, 2), Ord_Date DATE, Customer_id INT, Salesman_id INT, FOREIGN KEY (Customer_id) REFERENCES Customer(Customer_id) ON DELETE CASCADE, FOREIGN KEY (Salesman_id) REFERENCES Salesman(Salesman_id) ON DELETE CASCADE);
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> DESC Orders;
++--------------+---------------+------+-----+---------+-------+
+| Field        | Type          | Null | Key | Default | Extra |
++--------------+---------------+------+-----+---------+-------+
+| Ord_No       | int           | NO   | PRI | NULL    |       |
+| Purchase_Amt | decimal(10,2) | YES  |     | NULL    |       |
+| Ord_Date     | date          | YES  |     | NULL    |       |
+| Customer_id  | int           | YES  | MUL | NULL    |       |
+| Salesman_id  | int           | YES  | MUL | NULL    |       |
++--------------+---------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> INSERT INTO Salesman VALUES (1, 'John Doe', 'Bangalore', 0.1),(2, 'Jane Smith', 'Mumbai', 0.15),(3, 'Sam Rogers', 'Delhi', 0.12),(4, 'Emily Johnson', 'Chennai', 0.08);
+Query OK, 4 rows affected (0.01 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM Salesman;
++-------------+---------------+-----------+------------+
+| Salesman_id | Name          | City      | Commission |
++-------------+---------------+-----------+------------+
+|           1 | John Doe      | Bangalore |       0.10 |
+|           2 | Jane Smith    | Mumbai    |       0.15 |
+|           3 | Sam Rogers    | Delhi     |       0.12 |
+|           4 | Emily Johnson | Chennai   |       0.08 |
++-------------+---------------+-----------+------------+
+4 rows in set (0.00 sec)
+
+mysql> INSERT INTO Customer VALUES (101, 'Alice Adams', 'Bangalore', 2, 1),(102, 'Bob Brown', 'Mumbai', 3, 2),(103, 'Charlie Clark', 'Bangalore', 4, 1),(104, 'David David', 'Delhi', 2, 3);
+Query OK, 4 rows affected (0.00 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM Customer;
++-------------+---------------+-----------+-------+-------------+
+| Customer_id | Cust_Name     | City      | Grade | Salesman_id |
++-------------+---------------+-----------+-------+-------------+
+|         101 | Alice Adams   | Bangalore |     2 |           1 |
+|         102 | Bob Brown     | Mumbai    |     3 |           2 |
+|         103 | Charlie Clark | Bangalore |     4 |           1 |
+|         104 | David David   | Delhi     |     2 |           3 |
++-------------+---------------+-----------+-------+-------------+
+4 rows in set (0.01 sec)
+
+mysql> INSERT INTO Orders VALUES (1001, 500.00, '2023-01-01', 101, 1),(1002, 750.00, '2023-01-01', 102, 2),(1003, 600.00, '2023-01-02', 103, 1),(1004, 900.00, '2023-01-02', 104, 3),(1005, 1200.00, '2023-01-03', 101, 1),(1006, 800.00, '2023-01-03', 103, 1),(1007, 950.00, '2023-01-04', 102, 2);
+Query OK, 7 rows affected (0.01 sec)
+Records: 7  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM Orders;
++--------+--------------+------------+-------------+-------------+
+| Ord_No | Purchase_Amt | Ord_Date   | Customer_id | Salesman_id |
++--------+--------------+------------+-------------+-------------+
+|   1001 |       500.00 | 2023-01-01 |         101 |           1 |
+|   1002 |       750.00 | 2023-01-01 |         102 |           2 |
+|   1003 |       600.00 | 2023-01-02 |         103 |           1 |
+|   1004 |       900.00 | 2023-01-02 |         104 |           3 |
+|   1005 |      1200.00 | 2023-01-03 |         101 |           1 |
+|   1006 |       800.00 | 2023-01-03 |         103 |           1 |
+|   1007 |       950.00 | 2023-01-04 |         102 |           2 |
++--------+--------------+------------+-------------+-------------+
+7 rows in set (0.00 sec)
+
+#QUERY 01
+mysql> SELECT COUNT(*) FROM Customer WHERE Grade > (SELECT AVG(Grade) FROM Customer WHERE City ='Bangalore');
++----------+
+| COUNT(*) |
++----------+
+|        1 |
++----------+
+1 row in set (0.00 sec)
+
+#QUERY 02
+mysql> SELECT s.Name, COUNT(c.Customer_id) FROM Salesman s, Customer c WHERE s.Salesman_id = c.Salesman_id GROUP BY s.Salesman_id HAVING COUNT(c.Customer_id
+) > 1;
++----------+----------------------+
+| Name     | COUNT(c.Customer_id) |
++----------+----------------------+
+| John Doe |                    2 |
++----------+----------------------+
+1 row in set (0.00 sec)
+
+#QUERY 03
+mysql> (SELECT Name FROM Salesman s, Customer c WHERE s.Salesman_id = c.Salesman_id AND s.City = c.City) UNION (SELECT Name FROM Salesman WHERE Salesman_id
+NOT IN (SELECT s1.Salesman_id FROM Salesman s1, Customer c1 WHERE s1.Salesman_id = c1.Salesman_id AND s1.City = c1.City));
++---------------+
+| Name          |
++---------------+
+| John Doe      |
+| Jane Smith    |
+| Sam Rogers    |
+| Emily Johnson |
++---------------+
+4 rows in set (0.00 sec)
+
+#QUERY 04
+mysql> CREATE VIEW Sales_HigherOrder AS SELECT Salesman_id, Purchase_Amt FROM Orders WHERE Purchase_Amt = (SELECT MAX(o.Purchase_Amt) FROM Orders o where o.Ord_Date='2023-01-03');
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> SELECT * FROM Sales_HigherOrder;
++-------------+--------------+
+| Salesman_id | Purchase_Amt |
++-------------+--------------+
+|           1 |      1200.00 |
++-------------+--------------+
+1 row in set (0.00 sec)
+
+#QUERY 05
+mysql> DELETE FROM Salesman WHERE Salesman_id = 3;
+Query OK, 1 row affected (0.02 sec)
+
+mysql> SELECT * FROM Salesman;
++-------------+---------------+-----------+------------+
+| Salesman_id | Name          | City      | Commission |
++-------------+---------------+-----------+------------+
+|           1 | John Doe      | Bangalore |       0.10 |
+|           2 | Jane Smith    | Mumbai    |       0.15 |
+|           4 | Emily Johnson | Chennai   |       0.08 |
++-------------+---------------+-----------+------------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT * FROM Orders;
++--------+--------------+------------+-------------+-------------+
+| Ord_No | Purchase_Amt | Ord_Date   | Customer_id | Salesman_id |
++--------+--------------+------------+-------------+-------------+
+|   1001 |       500.00 | 2023-01-01 |         101 |           1 |
+|   1002 |       750.00 | 2023-01-01 |         102 |           2 |
+|   1003 |       600.00 | 2023-01-02 |         103 |           1 |
+|   1005 |      1200.00 | 2023-01-03 |         101 |           1 |
+|   1006 |       800.00 | 2023-01-03 |         103 |           1 |
+|   1007 |       950.00 | 2023-01-04 |         102 |           2 |
++--------+--------------+------------+-------------+-------------+
+6 rows in set (0.00 sec)
