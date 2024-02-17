@@ -164,3 +164,47 @@ mysql> SELECT Mov_Title FROM Movies M, Director D WHERE D.Dir_id =M.Dir_id AND D
 | Notorious   |
 +-------------+
 2 rows in set (0.00 sec)
+
+#QUERY 02
+mysql> SELECT Mov_Title FROM Movies M, Movie_Cast MC WHERE M.Mov_id=MC.Mov_id AND MC.Act_id IN (SELECT Act_id FROM Movie_Cast GROUP BY Act_id HAVING COUNT(Mov_id)>=2);
++-----------+
+| Mov_Title |
++-----------+
+| Male      |
+| Manasare  |
++-----------+
+2 rows in set (0.01 sec)
+
+#QUERY 03
+mysql> (SELECT Act_Name FROM Actor A JOIN Movie_Cast C ON A.Act_id=C.Act_id JOIN Movies M ON C.Mov_id=M.Mov_id WHERE M.Mov_Year < 2000) INTERSECT (SELECT Act_Name FROM Actor A JOIN Movie_Cast C ON A.Act_id=C.Act_id JOIN Movies M ON C.Mov_id=M.Mov_id WHERE M.Mov_Year > 2015);
+Empty set (0.00 sec)
+
+#QUERY 04
+mysql> SELECT Mov_Title, Rev_Stars FROM Movies M, Rating R WHERE M.Mov_id=R.Mov_id AND Rev_Stars>=1 ORDER BY Mov_Title;
++------------+-----------+
+| Mov_Title  | Rev_Stars |
++------------+-----------+
+| Eega       |         4 |
+| Last World |         3 |
+| Male       |         3 |
+| Manasare   |         4 |
+| Paramathma |         5 |
++------------+-----------+
+5 rows in set (0.00 sec)
+
+#QUERY 05
+mysql> UPDATE Rating SET Rev_Stars=5 WHERE Mov_id IN (SELECT Mov_id FROM Movies M, Director D WHERE M.Dir_id=D.Dir_id AND Dir_Name='STEVEN SPIELBERG');
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT * FROM Rating;
++--------+-----------+
+| Mov_id | Rev_Stars |
++--------+-----------+
+|   1111 |         5 |
+|   2222 |         4 |
+|   3333 |         3 |
+|   4444 |         5 |
+|   5555 |         4 |
++--------+-----------+
+5 rows in set (0.00 sec)
