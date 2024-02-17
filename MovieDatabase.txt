@@ -1,0 +1,166 @@
+mysql> create database MovieDatabase;
+Query OK, 1 row affected (0.02 sec)
+
+mysql> use MovieDatabase;
+Database changed
+mysql> CREATE TABLE Actor (Act_id INT(5) PRIMARY KEY, Act_Name Varchar(25) NOT NULL, Act_Gender Varchar(2) NOT NULL);
+Query OK, 0 rows affected, 1 warning (0.06 sec)
+
+mysql> DESC Actor;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| Act_id     | int         | NO   | PRI | NULL    |       |
+| Act_Name   | varchar(25) | NO   |     | NULL    |       |
+| Act_Gender | varchar(2)  | NO   |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> CREATE TABLE Director (Dir_id INT(5) PRIMARY KEY, Dir_Name VARCHAR(25) NOT NULL, Dir_Phone INT(10) NOT NULL);
+Query OK, 0 rows affected, 2 warnings (0.04 sec)
+
+mysql> DESC Director;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| Dir_id    | int         | NO   | PRI | NULL    |       |
+| Dir_Name  | varchar(25) | NO   |     | NULL    |       |
+| Dir_Phone | int         | NO   |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql> CREATE TABLE Movies (Mov_id INT(5) PRIMARY KEY,Mov_Title VARCHAR(30) NOT NULL,Mov_Year INT(5) NOT NULL,Mov_Lang VARCHAR(10) NOT NULL,Dir_id INT(5), F
+OREIGN KEY (Dir_id) REFERENCES Director(Dir_id) ON DELETE CASCADE);
+Query OK, 0 rows affected, 3 warnings (0.05 sec)
+
+mysql> DESC Movies;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| Mov_id    | int         | NO   | PRI | NULL    |       |
+| Mov_Title | varchar(30) | NO   |     | NULL    |       |
+| Mov_Year  | int         | NO   |     | NULL    |       |
+| Mov_Lang  | varchar(10) | NO   |     | NULL    |       |
+| Dir_id    | int         | YES  | MUL | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+5 rows in set (0.01 sec)
+
+mysql> CREATE TABLE Movie_Cast(Act_id INT(5),Mov_id INT(5),Role VARCHAR(10), PRIMARY KEY(Act_id,Mov_id), FOREIGN KEY (Act_id) REFERENCES Actor(Act_id) ON DE
+LETE CASCADE, FOREIGN KEY (Mov_id) REFERENCES Movies(Mov_id) ON DELETE CASCADE);
+Query OK, 0 rows affected, 2 warnings (0.05 sec)
+
+mysql> DESC Movie_Cast;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| Act_id | int         | NO   | PRI | NULL    |       |
+| Mov_id | int         | NO   | PRI | NULL    |       |
+| Role   | varchar(10) | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> CREATE TABLE Rating(Mov_id INT(5) PRIMARY KEY, Rev_Stars INT(1) NOT NULL, FOREIGN KEY (Mov_id) REFERENCES Movies(Mov_id) ON DELETE CASCADE);
+Query OK, 0 rows affected, 2 warnings (0.04 sec)
+
+mysql> DESC Rating;
++-----------+------+------+-----+---------+-------+
+| Field     | Type | Null | Key | Default | Extra |
++-----------+------+------+-----+---------+-------+
+| Mov_id    | int  | NO   | PRI | NULL    |       |
+| Rev_Stars | int  | NO   |     | NULL    |       |
++-----------+------+------+-----+---------+-------+
+2 rows in set (0.01 sec)
+
+mysql> INSERT INTO Actor VALUES (111,'Deepa Sannidhi','F'),(222,'Sudeep','M'),(333,'Puneeth','M'),(444,'Dhiganth','M'),(555,'Angela','F');
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM Actor;
++--------+----------------+------------+
+| Act_id | Act_Name       | Act_Gender |
++--------+----------------+------------+
+|    111 | Deepa Sannidhi | F          |
+|    222 | Sudeep         | M          |
+|    333 | Puneeth        | M          |
+|    444 | Dhiganth       | M          |
+|    555 | Angela         | F          |
++--------+----------------+------------+
+5 rows in set (0.00 sec)
+
+mysql> INSERT INTO Director VALUES (101,'Hitchcock',112267809),(102,'Raj Mouli',152358709),(103,'Yogaraj',272337808),(104,'Steven Spielberg', 363445678),(10
+5,'Pavan Kumar',385456809);
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM Director;
++--------+------------------+-----------+
+| Dir_id | Dir_Name         | Dir_Phone |
++--------+------------------+-----------+
+|    101 | Hitchcock        | 112267809 |
+|    102 | Raj Mouli        | 152358709 |
+|    103 | Yogaraj          | 272337808 |
+|    104 | Steven Spielberg | 363445678 |
+|    105 | Pavan Kumar      | 385456809 |
++--------+------------------+-----------+
+5 rows in set (0.00 sec)
+
+mysql> INSERT INTO Movies VALUES (1111,'Last World',2009,'English',104),(2222,'Eega',2010,'Telugu',102),(4444,'Paramathma',2012,'Kannada',103),(3333,'Male',2006,'Kannada',103),(5555,'Manasare',2010,'Kannada',103),(6666,'Rear Window',1954,'English',101),(7777,'Notorious',1946,'English',101);
+Query OK, 7 rows affected (0.01 sec)
+Records: 7  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM Movies;
++--------+-------------+----------+----------+--------+
+| Mov_id | Mov_Title   | Mov_Year | Mov_Lang | Dir_id |
++--------+-------------+----------+----------+--------+
+|   1111 | Last World  |     2009 | English  |    104 |
+|   2222 | Eega        |     2010 | Telugu   |    102 |
+|   3333 | Male        |     2006 | Kannada  |    103 |
+|   4444 | Paramathma  |     2012 | Kannada  |    103 |
+|   5555 | Manasare    |     2010 | Kannada  |    103 |
+|   6666 | Rear Window |     1954 | English  |    101 |
+|   7777 | Notorious   |     1946 | English  |    101 |
++--------+-------------+----------+----------+--------+
+7 rows in set (0.00 sec)
+
+mysql> INSERT INTO Movie_Cast VALUES (222,2222,'Vilan'),(333,4444,'Hero'),(111,4444,'Heroin'),(444,3333,'Guest'),(444,5555,'Hero'),(555,7777,'Mother');
+Query OK, 6 rows affected (0.02 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM Movie_Cast;
++--------+--------+--------+
+| Act_id | Mov_id | Role   |
++--------+--------+--------+
+|    111 |   4444 | Heroin |
+|    222 |   2222 | Vilan  |
+|    333 |   4444 | Hero   |
+|    444 |   3333 | Guest  |
+|    444 |   5555 | Hero   |
+|    555 |   7777 | Mother |
++--------+--------+--------+
+6 rows in set (0.00 sec)
+
+mysql> INSERT INTO Rating VALUES (1111,3),(2222,4),(3333,3),(5555,4),(4444,5);
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM Rating;
++--------+-----------+
+| Mov_id | Rev_Stars |
++--------+-----------+
+|   1111 |         3 |
+|   2222 |         4 |
+|   3333 |         3 |
+|   4444 |         5 |
+|   5555 |         4 |
++--------+-----------+
+5 rows in set (0.00 sec)
+
+#QUERY 01
+mysql> SELECT Mov_Title FROM Movies M, Director D WHERE D.Dir_id =M.Dir_id AND Dir_Name ='Hitchcock';
++-------------+
+| Mov_Title   |
++-------------+
+| Rear Window |
+| Notorious   |
++-------------+
+2 rows in set (0.00 sec)
