@@ -115,16 +115,15 @@ mysql> SELECT s.Name, COUNT(c.Customer_id) FROM Salesman s, Customer c WHERE s.S
 1 row in set (0.00 sec)
 
 #QUERY 03
-mysql> (SELECT Name FROM Salesman s, Customer c WHERE s.Salesman_id = c.Salesman_id AND s.City = c.City) UNION (SELECT Name FROM Salesman WHERE Salesman_id
-NOT IN (SELECT s1.Salesman_id FROM Salesman s1, Customer c1 WHERE s1.Salesman_id = c1.Salesman_id AND s1.City = c1.City));
-+---------------+
-| Name          |
-+---------------+
-| John Doe      |
-| Jane Smith    |
-| Sam Rogers    |
-| Emily Johnson |
-+---------------+
+mysql> (SELECT Name, 'Has Customers' FROM Salesman s, Customer c WHERE s.Salesman_id = c.Salesman_id AND s.City = c.City) UNION (SELECT Name, 'No Customers' FROM Salesman WHERE Salesman_id NOT IN (SELECT s1.Salesman_id FROM Salesman s1, Customer c1 WHERE s1.Salesman_id = c1.Salesman_id AND s1.City = c1.City));
++---------------+---------------+
+| Name          | Has Customers |
++---------------+---------------+
+| John Doe      | Has Customers |
+| Jane Smith    | Has Customers |
+| Sam Rogers    | Has Customers |
+| Emily Johnson | No Customers  |
++---------------+---------------+
 4 rows in set (0.00 sec)
 
 #QUERY 04
