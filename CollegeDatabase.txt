@@ -294,6 +294,71 @@ mysql> SELECT * FROM IAMarks;
 +------------+---------+-------+-------+-------+-------+---------+
 5 rows in set (0.00 sec)
 
+mysql> DELIMITER //
+REATE PROmysql> CREATE PROCEDURE AVG_MARKS()
+    -> BEGIN
+    ->     DECLARE done INT DEFAULT FALSE;
+    ->     DECLARE C_A INTEGER;
+    ->     DECLARE C_B INTEGER;
+    ->     DECLARE C_SUM INTEGER;
+    ->     DECLARE C_AVG INTEGER;
+    ->     DECLARE C_USN VARCHAR(10);
+    ->     DECLARE C_SUBCODE VARCHAR(8);
+    ->     DECLARE C_SSID VARCHAR(5);
+    ->
+   -- D    ->     -- Declare Cursor Variables
+    ->     DECLARE cur CURSOR FOR
+    ->         SELECT GREATEST(Test1, Test2) AS A, GREATEST(Test1, Test3) AS B, GREATEST(Test3, Test2) AS C, USN, SubCode, SSID
+    ->         FROM IAMarks
+    ->         WHERE FinalIA IS NULL
+    ->         FOR UPDATE;
+    ->     -- D
+    ->     -- Declare Exit Handler
+    ->     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+OPEN    ->
+    ->     OPEN cur;
+    ->
+    ->     FETCH_LOOP: LOOP
+    ->         FETCH cur INTO C_A, C_B, C_SUM, C_USN, C_SUBCODE, C_SSID;
+    ->         IF done THEN
+    ->             LEAVE FETCH_LOOP;
+    ->         END IF;
+    ->
+    ->         IF C_A != C_B THEN
+    ->             SET C_SUM = C_A + C_B;
+    ->         ELSE
+    ->             SET C_SUM = C_A + C_SUM;
+    EN    ->         END IF;
+    ->
+    ->         SET C_AVG = C_SUM / 2;
+    ->
+    ->         UPDATE IAMarks
+    ->         SET FinalIA = C_AVG
+    ->         WHERE USN = C_USN AND SubCode = C_SUBCODE AND SSID = C_SSID;
+    ->
+    ->     END LOOP FETCH_LOOP;
+    ->
+    ->     CLOSE cur;
+    -> END;
+    -> //
+DELIMITER ;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql>
+mysql> DELIMITER ;
+
+mysql> SELECT * FROM IAMarks;
++------------+---------+-------+-------+-------+-------+---------+
+| USN        | SubCode | SSID  | Test1 | Test2 | Test3 | FinalIA |
++------------+---------+-------+-------+-------+-------+---------+
+| 1BI15CS101 | 10CS81  | CSE8C |    15 |    16 |    18 |      17 |
+| 1BI15CS101 | 10CS82  | CSE8C |    12 |    19 |    14 |      17 |
+| 1BI15CS101 | 10CS83  | CSE8C |    19 |    15 |    20 |      20 |
+| 1BI15CS101 | 10CS84  | CSE8C |    20 |    16 |    19 |      20 |
+| 1BI15CS101 | 10CS85  | CSE8C |    15 |    15 |    12 |      15 |
++------------+---------+-------+-------+-------+-------+---------+
+5 rows in set (0.00 sec)
+
 #QUERY 05
 mysql> SELECT S.USN,S.SName,S.Address,S.Phone,S.Gender,(CASE WHEN IA.FinalIA BETWEEN 17 AND 20 THEN 'OUTSTANDING' WHEN IA. FinalIA BETWEEN 12 AND 16 THEN 'AVERAGE' ELSE 'WEAK' END) AS CAT FROM Student S, SemSec SS, IAMarks IA, Subject SUB WHERE S.USN = IA.USN AND SS.SSID = IA.SSID AND SUB.SubCode = IA.SubCode AND SUB.SEM = 8;
 +------------+---------+-----------+--------+--------+-------------+
