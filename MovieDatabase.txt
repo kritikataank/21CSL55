@@ -179,6 +179,16 @@ mysql> SELECT Mov_Title FROM Movies M, Movie_Cast MC WHERE M.Mov_id=MC.Mov_id AN
 mysql> (SELECT Act_Name FROM Actor A JOIN Movie_Cast C ON A.Act_id=C.Act_id JOIN Movies M ON C.Mov_id=M.Mov_id WHERE M.Mov_Year < 2000) INTERSECT (SELECT Act_Name FROM Actor A JOIN Movie_Cast C ON A.Act_id=C.Act_id JOIN Movies M ON C.Mov_id=M.Mov_id WHERE M.Mov_Year > 2015);
 Empty set (0.00 sec)
 
+OR 
+
+mysql> SELECT Act_Name FROM Actor A JOIN Movie_Cast C ON A.Act_Id = C.Act_Id JOIN Movies M ON C.Mov_Id=M.Mov_Id WHERE M.Mov_Year NOT BETWEEN 2000 AND 2015;
++----------+
+| Act_Name |
++----------+
+| Angela   |
++----------+
+1 row in set (0.01 sec)
+
 #QUERY 04
 mysql> SELECT Mov_Title, Rev_Stars FROM Movies M, Rating R WHERE M.Mov_id=R.Mov_id AND Rev_Stars>=1 ORDER BY Mov_Title;
 +------------+-----------+
